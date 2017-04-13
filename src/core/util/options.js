@@ -269,15 +269,15 @@ export function mergeOptions (
   if (process.env.NODE_ENV !== 'production') {
     checkComponents(child)
   }
-  normalizeProps(child)
-  normalizeDirectives(child)
-  const extendsFrom = child.extends
+  normalizeProps(child) // 格式化child的props
+  normalizeDirectives(child) // 格式化child的directives
+  const extendsFrom = child.extends // vm.extends
   if (extendsFrom) {
     parent = typeof extendsFrom === 'function'
       ? mergeOptions(parent, extendsFrom.options, vm)
       : mergeOptions(parent, extendsFrom, vm)
   }
-  if (child.mixins) {
+  if (child.mixins) { // vm.mixins
     for (let i = 0, l = child.mixins.length; i < l; i++) {
       let mixin = child.mixins[i]
       if (mixin.prototype instanceof Vue) {

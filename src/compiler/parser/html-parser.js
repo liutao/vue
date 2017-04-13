@@ -77,6 +77,7 @@ export function parseHTML (html, options) {
     if (!lastTag || !isPlainTextElement(lastTag)) {
       let textEnd = html.indexOf('<')
       if (textEnd === 0) {
+        // 过滤掉注释，doctype等
         // Comment:
         if (comment.test(html)) {
           const commentEnd = html.indexOf('-->')
@@ -104,7 +105,7 @@ export function parseHTML (html, options) {
           continue
         }
 
-        // End tag:
+        // End tag:/^<\/((?:[a-zA-Z_][\w\-\.]*\:)?[a-zA-Z_][\w\-\.]*)[^>]*>/
         const endTagMatch = html.match(endTag)
         if (endTagMatch) {
           const curIndex = index
@@ -187,6 +188,8 @@ export function parseHTML (html, options) {
   }
 
   function parseStartTag () {
+    // /^<((?:[a-zA-Z_][\w\-\.]*\:)?[a-zA-Z_][\w\-\.]*)/
+    // 匹配标签名
     const start = html.match(startTagOpen)
     if (start) {
       const match = {
@@ -196,10 +199,13 @@ export function parseHTML (html, options) {
       }
       advance(start[0].length)
       let end, attr
+      // attribute: /^\s*([^\s"'<>\/=]+)(?:\s*((?:=))\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/
+      // 匹配起始标签内的属性
       while (!(end = html.match(startTagClose)) && (attr = html.match(attribute))) {
         advance(attr[0].length)
         match.attrs.push(attr)
       }
+      // 是不是单标签
       if (end) {
         match.unarySlash = end[1]
         advance(end[0].length)

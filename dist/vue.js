@@ -402,7 +402,6 @@ function parsePath (path) {
 /*  */
 /* globals MutationObserver */
 
-// can we use __proto__?
 var hasProto = '__proto__' in {};
 
 // Browser environment sniffing
@@ -643,9 +642,6 @@ Dep.prototype.notify = function notify () {
   }
 };
 
-// the current target watcher being evaluated.
-// this is globally unique because there could be only one
-// watcher being evaluated at any time.
 Dep.target = null;
 var targetStack = [];
 
@@ -948,11 +944,6 @@ function dependArray (value) {
 
 /*  */
 
-/**
- * Option overwriting strategies are functions that handle
- * how to merge a parent option value and a child option
- * value into the final value.
- */
 var strats = config.optionMergeStrategies;
 
 /**
@@ -1204,15 +1195,15 @@ function mergeOptions (
   {
     checkComponents(child);
   }
-  normalizeProps(child);
-  normalizeDirectives(child);
-  var extendsFrom = child.extends;
+  normalizeProps(child); // 格式化child的props
+  normalizeDirectives(child); // 格式化child的directives
+  var extendsFrom = child.extends; // vm.extends
   if (extendsFrom) {
     parent = typeof extendsFrom === 'function'
       ? mergeOptions(parent, extendsFrom.options, vm)
       : mergeOptions(parent, extendsFrom, vm);
   }
-  if (child.mixins) {
+  if (child.mixins) { // vm.mixins
     for (var i = 0, l = child.mixins.length; i < l; i++) {
       var mixin = child.mixins[i];
       if (mixin.prototype instanceof Vue$3) {
@@ -1737,18 +1728,6 @@ function mergeVNodeHook (def, hookKey, hook) {
 
 /*  */
 
-// The template compiler attempts to minimize the need for normalization by
-// statically analyzing the template at compile time.
-//
-// For plain HTML markup, normalization can be completely skipped because the
-// generated render function is guaranteed to return Array<VNode>. There are
-// two cases where extra normalization is needed:
-
-// 1. When the children contains components - because a functional component
-// may return an Array instead of a single root. In this case, just a simple
-// normalization is needed - if any child is an Array, we flatten the whole
-// thing with Array.prototype.concat. It is guaranteed to be only 1-level deep
-// because functional components already normalize their own children.
 function simpleNormalizeChildren (children) {
   for (var i = 0; i < children.length; i++) {
     if (Array.isArray(children[i])) {
@@ -2605,11 +2584,6 @@ Watcher.prototype.teardown = function teardown () {
   }
 };
 
-/**
- * Recursively traverse an object to evoke all converted
- * getters, so that every nested property inside the object
- * is collected as a "deep" dependency.
- */
 var seenObjects = new _Set();
 function traverse (val) {
   seenObjects.clear();
@@ -2675,7 +2649,7 @@ function initState (vm) {
 var isReservedProp = { key: 1, ref: 1, slot: 1 };
 
 function initProps (vm, propsOptions) {
-  var propsData = vm.$options.propsData || {};
+  var propsData = vm.$options.propsData || {}; // propsData只有在new创建实例时使用
   var props = vm._props = {};
   // cache prop keys so that future props updates can iterate using Array
   // instead of dynamic object key enumeration.
@@ -2913,7 +2887,6 @@ function stateMixin (Vue) {
 
 /*  */
 
-// hooks to be invoked on component VNodes during patch
 var componentVNodeHooks = {
   init: function init (
     vnode,
@@ -3368,9 +3341,6 @@ function applyNS (vnode, ns) {
 
 /*  */
 
-/**
- * Runtime helper for rendering v-for lists.
- */
 function renderList (
   val,
   render
@@ -3399,9 +3369,6 @@ function renderList (
 
 /*  */
 
-/**
- * Runtime helper for rendering <slot>
- */
 function renderSlot (
   name,
   fallback,
@@ -3432,18 +3399,12 @@ function renderSlot (
 
 /*  */
 
-/**
- * Runtime helper for resolving filters
- */
 function resolveFilter (id) {
   return resolveAsset(this.$options, 'filters', id, true) || identity
 }
 
 /*  */
 
-/**
- * Runtime helper for checking keyCodes from config.
- */
 function checkKeyCodes (
   eventKeyCode,
   key,
@@ -3459,9 +3420,6 @@ function checkKeyCodes (
 
 /*  */
 
-/**
- * Runtime helper for merging v-bind="object" into a VNode's data.
- */
 function bindObjectProps (
   data,
   tag,
@@ -3499,9 +3457,6 @@ function bindObjectProps (
 
 /*  */
 
-/**
- * Runtime helper for rendering static trees.
- */
 function renderStatic (
   index,
   isInFor
@@ -3783,6 +3738,7 @@ function initInternalComponent (vm, options) {
 
 function resolveConstructorOptions (Ctor) {
   var options = Ctor.options;
+  // 有super属性，说明Ctor是通过Vue.extend()方法创建的子类
   if (Ctor.super) {
     var superOptions = resolveConstructorOptions(Ctor.super);
     var cachedSuperOptions = Ctor.superOptions;
@@ -3843,10 +3799,15 @@ function Vue$3 (options) {
   this._init(options);
 }
 
-initMixin(Vue$3);
+// _init
+initMixin(Vue$3);  
+// $set、$delete、$watch
 stateMixin(Vue$3);
+// $on、$once、$off、$emit
 eventsMixin(Vue$3);
+// _update、$forceUpdate、$destroy
 lifecycleMixin(Vue$3);
+// $nextTick、_render、
 renderMixin(Vue$3);
 
 /*  */
@@ -4145,19 +4106,26 @@ function initGlobalAPI (Vue) {
   Vue.nextTick = nextTick;
 
   Vue.options = Object.create(null);
+  // Vue.options.components、Vue.options.directives、Vue.options.filters
   config._assetTypes.forEach(function (type) {
     Vue.options[type + 's'] = Object.create(null);
   });
 
   // this is used to identify the "base" constructor to extend all plain-object
   // components with in Weex's multi-instance scenarios.
+  // Vue.options._base
   Vue.options._base = Vue;
 
+  // Vue.options.components.KeepAlive
   extend(Vue.options.components, builtInComponents);
 
+  // Vue.use
   initUse(Vue);
+  // Vue.mixin
   initMixin$1(Vue);
+  // Vue.extend
   initExtend(Vue);
+  // Vue.component、Vue.directive、Vue.filter
   initAssetRegisters(Vue);
 }
 
@@ -4171,7 +4139,6 @@ Vue$3.version = '2.2.6';
 
 /*  */
 
-// attributes that should be using props for binding
 var acceptValue = makeMap('input,textarea,option,select');
 var mustUseProp = function (tag, type, attr) {
   return (
@@ -4354,9 +4321,6 @@ function isUnknownElement (tag) {
 
 /*  */
 
-/**
- * Query an element selector if it's not an element already.
- */
 function query (el) {
   if (typeof el === 'string') {
     var selected = document.querySelector(el);
@@ -5836,10 +5800,6 @@ function genDefaultModel (
 
 /*  */
 
-// normalize v-model event tokens that can only be determined at runtime.
-// it's important to place the event as the first in the array because
-// the whole point is ensuring the v-model callback gets called before
-// user-attached handlers.
 function normalizeEvents (on) {
   var event;
   /* istanbul ignore if */
@@ -6680,8 +6640,6 @@ var platformModules = [
 
 /*  */
 
-// the directive module should be applied last, after all
-// built-in modules have been applied.
 var modules = platformModules.concat(baseModules);
 
 var patch = createPatchFunction({ nodeOps: nodeOps, modules: modules });
@@ -6691,7 +6649,6 @@ var patch = createPatchFunction({ nodeOps: nodeOps, modules: modules });
  * properties to Elements.
  */
 
-/* istanbul ignore if */
 if (isIE9) {
   // http://www.matts411.com/post/internet-explorer-9-oninput/
   document.addEventListener('selectionchange', function () {
@@ -6809,7 +6766,6 @@ function trigger (el, type) {
 
 /*  */
 
-// recursively search for possible transition defined inside the component root
 function locateNode (vnode) {
   return vnode.componentInstance && (!vnode.data || !vnode.data.transition)
     ? locateNode(vnode.componentInstance._vnode)
@@ -7224,7 +7180,6 @@ var platformComponents = {
 
 /*  */
 
-// install platform specific utils
 Vue$3.config.mustUseProp = mustUseProp;
 Vue$3.config.isReservedTag = isReservedTag;
 Vue$3.config.getTagNamespace = getTagNamespace;
@@ -7272,7 +7227,6 @@ setTimeout(function () {
 
 /*  */
 
-// check whether current browser encodes a char inside attribute values
 function shouldDecode (content, encoded) {
   var div = document.createElement('div');
   div.innerHTML = "<div a=\"" + content + "\">";
@@ -7327,7 +7281,6 @@ function decode (html) {
  * http://erik.eae.net/simplehtmlparser/simplehtmlparser.js
  */
 
-// Regular Expressions for parsing tags and attributes
 var singleAttrIdentifier = /([^\s"'<>/=]+)/;
 var singleAttrAssign = /(?:=)/;
 var singleAttrValues = [
@@ -7392,6 +7345,7 @@ function parseHTML (html, options) {
     if (!lastTag || !isPlainTextElement(lastTag)) {
       var textEnd = html.indexOf('<');
       if (textEnd === 0) {
+        // 过滤掉注释，doctype等
         // Comment:
         if (comment.test(html)) {
           var commentEnd = html.indexOf('-->');
@@ -7419,7 +7373,7 @@ function parseHTML (html, options) {
           continue
         }
 
-        // End tag:
+        // End tag:/^<\/((?:[a-zA-Z_][\w\-\.]*\:)?[a-zA-Z_][\w\-\.]*)[^>]*>/
         var endTagMatch = html.match(endTag);
         if (endTagMatch) {
           var curIndex = index;
@@ -7502,6 +7456,8 @@ function parseHTML (html, options) {
   }
 
   function parseStartTag () {
+    // /^<((?:[a-zA-Z_][\w\-\.]*\:)?[a-zA-Z_][\w\-\.]*)/
+    // 匹配标签名
     var start = html.match(startTagOpen);
     if (start) {
       var match = {
@@ -7511,10 +7467,13 @@ function parseHTML (html, options) {
       };
       advance(start[0].length);
       var end, attr;
+      // attribute: /^\s*([^\s"'<>\/=]+)(?:\s*((?:=))\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/
+      // 匹配起始标签内的属性
       while (!(end = html.match(startTagClose)) && (attr = html.match(attribute))) {
         advance(attr[0].length);
         match.attrs.push(attr);
       }
+      // 是不是单标签
       if (end) {
         match.unarySlash = end[1];
         advance(end[0].length);
@@ -7693,13 +7652,14 @@ function parse (
   options
 ) {
   warn$2 = options.warn || baseWarn;
-  platformGetTagNamespace = options.getTagNamespace || no;
-  platformMustUseProp = options.mustUseProp || no;
-  platformIsPreTag = options.isPreTag || no;
-  preTransforms = pluckModuleFunction(options.modules, 'preTransformNode');
-  transforms = pluckModuleFunction(options.modules, 'transformNode');
-  postTransforms = pluckModuleFunction(options.modules, 'postTransformNode');
-  delimiters = options.delimiters;
+  // 平台相关的一些东西，分web和weex
+  platformGetTagNamespace = options.getTagNamespace || no;  // 获取tag的命名空间，svg或math
+  platformMustUseProp = options.mustUseProp || no; // 判断是否需要通过绑定prop来绑定属性
+  platformIsPreTag = options.isPreTag || no;  // 是不是pre标签
+  preTransforms = pluckModuleFunction(options.modules, 'preTransformNode');  // weex
+  transforms = pluckModuleFunction(options.modules, 'transformNode'); // 未知
+  postTransforms = pluckModuleFunction(options.modules, 'postTransformNode'); // 未知
+  delimiters = options.delimiters;  // 顾名思义
 
   var stack = [];
   var preserveWhitespace = options.preserveWhitespace !== false;
@@ -7729,7 +7689,7 @@ function parse (
   parseHTML(template, {
     warn: warn$2,
     expectHTML: options.expectHTML,
-    isUnaryTag: options.isUnaryTag,
+    isUnaryTag: options.isUnaryTag,  // 是否是单标签
     canBeLeftOpenTag: options.canBeLeftOpenTag,
     shouldDecodeNewlines: options.shouldDecodeNewlines,
     start: function start (tag, attrs, unary) {
@@ -7769,6 +7729,7 @@ function parse (
         preTransforms[i](element, options);
       }
 
+      // v-pre指令来标识该元素和子元素不用编译
       if (!inVPre) {
         processPre(element);
         if (element.pre) {
@@ -8466,7 +8427,6 @@ var baseDirectives = {
 
 /*  */
 
-// configurable state
 var warn$3;
 var transforms$1;
 var dataGenFns;
@@ -8840,8 +8800,6 @@ function transformSpecialNewlines (text) {
 
 /*  */
 
-// these keywords should not appear inside expressions, but operators like
-// typeof, instanceof and in are allowed
 var prohibitedKeywordRE = new RegExp('\\b' + (
   'do,if,for,let,new,try,var,case,else,with,await,break,catch,class,const,' +
   'super,throw,while,yield,delete,export,import,return,switch,default,' +

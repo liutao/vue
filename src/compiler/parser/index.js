@@ -47,13 +47,14 @@ export function parse (
   options: CompilerOptions
 ): ASTElement | void {
   warn = options.warn || baseWarn
-  platformGetTagNamespace = options.getTagNamespace || no
-  platformMustUseProp = options.mustUseProp || no
-  platformIsPreTag = options.isPreTag || no
-  preTransforms = pluckModuleFunction(options.modules, 'preTransformNode')
-  transforms = pluckModuleFunction(options.modules, 'transformNode')
-  postTransforms = pluckModuleFunction(options.modules, 'postTransformNode')
-  delimiters = options.delimiters
+  // 平台相关的一些东西，分web和weex
+  platformGetTagNamespace = options.getTagNamespace || no  // 获取tag的命名空间，svg或math
+  platformMustUseProp = options.mustUseProp || no // 判断是否需要通过绑定prop来绑定属性
+  platformIsPreTag = options.isPreTag || no  // 是不是pre标签
+  preTransforms = pluckModuleFunction(options.modules, 'preTransformNode')  // weex
+  transforms = pluckModuleFunction(options.modules, 'transformNode') // 未知
+  postTransforms = pluckModuleFunction(options.modules, 'postTransformNode') // 未知
+  delimiters = options.delimiters  // 顾名思义
 
   const stack = []
   const preserveWhitespace = options.preserveWhitespace !== false
@@ -83,7 +84,7 @@ export function parse (
   parseHTML(template, {
     warn,
     expectHTML: options.expectHTML,
-    isUnaryTag: options.isUnaryTag,
+    isUnaryTag: options.isUnaryTag,  // 是否是单标签
     canBeLeftOpenTag: options.canBeLeftOpenTag,
     shouldDecodeNewlines: options.shouldDecodeNewlines,
     start (tag, attrs, unary) {
@@ -123,6 +124,7 @@ export function parse (
         preTransforms[i](element, options)
       }
 
+      // v-pre指令来标识该元素和子元素不用编译
       if (!inVPre) {
         processPre(element)
         if (element.pre) {
