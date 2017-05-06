@@ -109,7 +109,6 @@ export function parse (
       if (ns) {
         element.ns = ns
       }
-
       if (isForbiddenTag(element) && !isServerRendering()) {
         element.forbidden = true
         process.env.NODE_ENV !== 'production' && warn(
@@ -443,6 +442,7 @@ function processAttrs (el) {
   for (i = 0, l = list.length; i < l; i++) {
     name = rawName = list[i].name
     value = list[i].value
+    // 指令
     if (dirRE.test(name)) {
       // mark element as dynamic
       el.hasBindings = true

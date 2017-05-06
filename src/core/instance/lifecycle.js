@@ -56,6 +56,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     const prevActiveInstance = activeInstance
     activeInstance = vm
     vm._vnode = vnode
+
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
     if (!prevVnode) {
@@ -160,6 +161,7 @@ export function mountComponent (
       }
     }
   }
+  
   callHook(vm, 'beforeMount')
 
   let updateComponent

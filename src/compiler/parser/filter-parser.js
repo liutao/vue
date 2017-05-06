@@ -16,6 +16,12 @@ export function parseFilters (exp: string): string {
   for (i = 0; i < exp.length; i++) {
     prev = c
     c = exp.charCodeAt(i)
+    // 0x27 '
+    // 0x5C \
+    // 0x22 "
+    // 0x60 `
+    // 0x2f /
+    // 0x7C |
     if (inSingle) {
       if (c === 0x27 && prev !== 0x5C) inSingle = false
     } else if (inDouble) {

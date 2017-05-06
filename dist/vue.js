@@ -1738,7 +1738,7 @@ function simpleNormalizeChildren (children) {
 }
 
 // 2. When the children contains constructs that always generated nested Arrays,
-// e.g. <template>, <slot>, v-for, or when the children is provided by user
+// e.g. <template>, <slot>, , or when the children is provided by user
 // with hand-written render functions / JSX. In such cases a full normalization
 // is needed to cater to all possible types of children values.
 function normalizeChildren (children) {
@@ -2011,6 +2011,7 @@ function lifecycleMixin (Vue) {
     var prevActiveInstance = activeInstance;
     activeInstance = vm;
     vm._vnode = vnode;
+
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
     if (!prevVnode) {
@@ -2115,6 +2116,7 @@ function mountComponent (
       }
     }
   }
+  
   callHook(vm, 'beforeMount');
 
   var updateComponent;
@@ -2887,6 +2889,7 @@ function stateMixin (Vue) {
 
 /*  */
 
+// hooks to be invoked on component VNodes during patch
 var componentVNodeHooks = {
   init: function init (
     vnode,
@@ -2967,6 +2970,7 @@ function createComponent (
     return
   }
 
+  // 异步组件
   // async component
   if (!Ctor.cid) {
     if (Ctor.resolved) {
@@ -3147,6 +3151,7 @@ function extractProps (data, Ctor, tag) {
     return
   }
   var res = {};
+  // props没有找到添加的地方
   var attrs = data.attrs;
   var props = data.props;
   var domProps = data.domProps;
@@ -3542,7 +3547,7 @@ function renderMixin (Vue) {
     var render = ref.render;
     var staticRenderFns = ref.staticRenderFns;
     var _parentVnode = ref._parentVnode;
-
+ 
     if (vm._isMounted) {
       // clone slot nodes on re-renders
       for (var key in vm.$slots) {
@@ -3691,6 +3696,7 @@ function initMixin (Vue) {
         vm
       );
     }
+
     /* istanbul ignore else */
     {
       initProxy(vm);
@@ -5316,6 +5322,12 @@ function parseFilters (exp) {
   for (i = 0; i < exp.length; i++) {
     prev = c;
     c = exp.charCodeAt(i);
+    // 0x27 '
+    // 0x5C \
+    // 0x22 "
+    // 0x60 `
+    // 0x2f /
+    // 0x7C |
     if (inSingle) {
       if (c === 0x27 && prev !== 0x5C) { inSingle = false; }
     } else if (inDouble) {
@@ -7381,7 +7393,7 @@ function parseHTML (html, options) {
           parseEndTag(endTagMatch[1], curIndex, index);
           continue
         }
-
+        
         // Start tag:
         var startTagMatch = parseStartTag();
         if (startTagMatch) {
@@ -7714,7 +7726,6 @@ function parse (
       if (ns) {
         element.ns = ns;
       }
-
       if (isForbiddenTag(element) && !isServerRendering()) {
         element.forbidden = true;
         "development" !== 'production' && warn$2(
@@ -8047,6 +8058,7 @@ function processAttrs (el) {
   for (i = 0, l = list.length; i < l; i++) {
     name = rawName = list[i].name;
     value = list[i].value;
+    // 指令
     if (dirRE.test(name)) {
       // mark element as dynamic
       el.hasBindings = true;
@@ -8995,7 +9007,7 @@ function createCompiler (baseOptions) {
 
     // compile
     var compiled = compile(template, options);
-
+console.log(compiled);
     // check compilation errors/tips
     {
       if (compiled.errors && compiled.errors.length) {

@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "dev": "rollup -w -c build/config.js --environment TARGET:web-full-dev",
+    "prod": "rollup -w  -c build/config.js --environment TARGET:web-full-prod",
     "dev:cjs": "rollup -w -c build/config.js --environment TARGET:web-runtime-cjs",
     "dev:test": "karma start build/karma.dev.config.js",
     "dev:ssr": "rollup -w -c build/config.js --environment TARGET:web-server-renderer",

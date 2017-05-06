@@ -3,6 +3,14 @@
 import { isPrimitive } from 'core/util/index'
 import VNode, { createTextVNode } from 'core/vdom/vnode'
 
+// 模板编译器尝试在编译时静态分析模板来使归一化的需求降到最低（就是尽量不用归一化）。
+
+// 简单的html标签由于生成的render函数返回的是一个VNode数组，可以直接跳过归一化。有两种情况需要额外的归一化处理：
+
+// 1. 子元素包含自定义component——因为函数式的component可能返回一个数组而不是一个根节点，这种情况下，我们只需要简单的归一化，如果子元素是数组，则通过Array.prototype.concat来把子元素合并为一个数组。最终生成的是一个一维数组，因为component已经对他自己的子内容进行了相同的操作。
+
+// 2. 子元素包含生成嵌套数组的结构，比如<template>、<slot>、v-for或子元素是用户首先的render函数。
+
 // The template compiler attempts to minimize the need for normalization by
 // statically analyzing the template at compile time.
 //
@@ -25,7 +33,7 @@ export function simpleNormalizeChildren (children: any) {
 }
 
 // 2. When the children contains constructs that always generated nested Arrays,
-// e.g. <template>, <slot>, v-for, or when the children is provided by user
+// e.g. <template>, <slot>, , or when the children is provided by user
 // with hand-written render functions / JSX. In such cases a full normalization
 // is needed to cater to all possible types of children values.
 export function normalizeChildren (children: any): ?Array<VNode> {

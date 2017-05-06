@@ -1,11 +1,11 @@
 /* @flow */
 
 export default class VNode {
-  tag: string | void;
-  data: VNodeData | void;
-  children: ?Array<VNode>;
-  text: string | void;
-  elm: Node | void;
+  tag: string | void; // 标签名
+  data: VNodeData | void; // 相关数据
+  children: ?Array<VNode>; // 子元素VNode
+  text: string | void; // 文本
+  elm: Node | void; // VNode对应的真实元素
   ns: string | void;
   context: Component | void; // rendered in this component's scope
   functionalContext: Component | void; // only for functional component root nodes

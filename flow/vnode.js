@@ -40,9 +40,9 @@ declare interface VNodeData {
   class?: any;
   staticStyle?: { [key: string]: any };
   style?: Array<Object> | Object;
-  props?: { [key: string]: any };
-  attrs?: { [key: string]: string };
-  domProps?: { [key: string]: any };
+  props?: { [key: string]: any }; // 暂时没有找到何处添加
+  attrs?: { [key: string]: string }; // 属性
+  domProps?: { [key: string]: any }; // 元素dom必须通过props使用的属性
   hook?: { [key: string]: Function };
   on?: ?{ [key: string]: Function | Array<Function> };
   nativeOn?: { [key: string]: Function | Array<Function> };

@@ -104,6 +104,7 @@ export function createComponent (
     return
   }
 
+  // 异步组件
   // async component
   if (!Ctor.cid) {
     if (Ctor.resolved) {
@@ -284,6 +285,7 @@ function extractProps (data: VNodeData, Ctor: Class<Component>, tag?: string): ?
     return
   }
   const res = {}
+  // props没有找到添加的地方
   const { attrs, props, domProps } = data
   if (attrs || props || domProps) {
     for (const key in propOptions) {
