@@ -621,7 +621,6 @@ export function createPatchFunction (backend) {
           oldElm._leaveCb ? null : parentElm,
           nodeOps.nextSibling(oldElm)
         )
-
         if (isDef(vnode.parent)) {
           // component root element replaced.
           // update parent placeholder node element, recursively

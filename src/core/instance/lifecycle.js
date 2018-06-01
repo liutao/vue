@@ -59,6 +59,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
 
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
+    console.time('render');
     if (!prevVnode) {
       // initial render
       vm.$el = vm.__patch__(
@@ -70,6 +71,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
       // updates
       vm.$el = vm.__patch__(prevVnode, vnode)
     }
+    console.timeEnd('render');
     activeInstance = prevActiveInstance
     // update __vue__ reference
     if (prevEl) {
@@ -161,7 +163,7 @@ export function mountComponent (
       }
     }
   }
-  
+
   callHook(vm, 'beforeMount')
 
   let updateComponent

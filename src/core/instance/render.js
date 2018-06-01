@@ -89,6 +89,7 @@ export function renderMixin (Vue: Class<Component>) {
         vnode = vm._vnode
       }
     }
+    console.log(vnode);
     // return empty vnode in case the render function errored out
     if (!(vnode instanceof VNode)) {
       if (process.env.NODE_ENV !== 'production' && Array.isArray(vnode)) {

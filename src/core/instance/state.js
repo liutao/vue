@@ -56,7 +56,7 @@ export function initState (vm: Component) {
 const isReservedProp = { key: 1, ref: 1, slot: 1 }
 
 function initProps (vm: Component, propsOptions: Object) {
-  const propsData = vm.$options.propsData || {} // propsData只有在new创建实例时使用
+  const propsData = vm.$options.propsData || {} 
   const props = vm._props = {}
   // cache prop keys so that future props updates can iterate using Array
   // instead of dynamic object key enumeration.

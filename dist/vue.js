@@ -1,6 +1,6 @@
 /*!
  * Vue.js v2.2.6
- * (c) 2014-2017 Evan You
+ * (c) 2014-2018 Evan You
  * Released under the MIT License.
  */
 (function (global, factory) {
@@ -642,6 +642,9 @@ Dep.prototype.notify = function notify () {
   }
 };
 
+// the current target watcher being evaluated.
+// this is globally unique because there could be only one
+// watcher being evaluated at any time.
 Dep.target = null;
 var targetStack = [];
 
@@ -2014,6 +2017,7 @@ function lifecycleMixin (Vue) {
 
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
+    console.time('render');
     if (!prevVnode) {
       // initial render
       vm.$el = vm.__patch__(
@@ -2025,6 +2029,7 @@ function lifecycleMixin (Vue) {
       // updates
       vm.$el = vm.__patch__(prevVnode, vnode);
     }
+    console.timeEnd('render');
     activeInstance = prevActiveInstance;
     // update __vue__ reference
     if (prevEl) {
@@ -2116,7 +2121,7 @@ function mountComponent (
       }
     }
   }
-  
+
   callHook(vm, 'beforeMount');
 
   var updateComponent;
@@ -2651,7 +2656,7 @@ function initState (vm) {
 var isReservedProp = { key: 1, ref: 1, slot: 1 };
 
 function initProps (vm, propsOptions) {
-  var propsData = vm.$options.propsData || {}; // propsData只有在new创建实例时使用
+  var propsData = vm.$options.propsData || {}; 
   var props = vm._props = {};
   // cache prop keys so that future props updates can iterate using Array
   // instead of dynamic object key enumeration.
@@ -2889,7 +2894,6 @@ function stateMixin (Vue) {
 
 /*  */
 
-// hooks to be invoked on component VNodes during patch
 var componentVNodeHooks = {
   init: function init (
     vnode,
@@ -2913,6 +2917,7 @@ var componentVNodeHooks = {
   },
 
   prepatch: function prepatch (oldVnode, vnode) {
+    debugger;
     var options = vnode.componentOptions;
     var child = vnode.componentInstance = oldVnode.componentInstance;
     updateChildComponent(
@@ -3578,6 +3583,7 @@ function renderMixin (Vue) {
           : vm._vnode;
       }
     }
+    console.log(vnode);
     // return empty vnode in case the render function errored out
     if (!(vnode instanceof VNode)) {
       if ("development" !== 'production' && Array.isArray(vnode)) {
@@ -3865,6 +3871,7 @@ function initExtend (Vue) {
     var SuperId = Super.cid;
     var cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {});
     if (cachedCtors[SuperId]) {
+      debugger;
       return cachedCtors[SuperId]
     }
 
@@ -5061,7 +5068,6 @@ function createPatchFunction (backend) {
           oldElm._leaveCb ? null : parentElm$1,
           nodeOps.nextSibling(oldElm)
         );
-
         if (isDef(vnode.parent)) {
           // component root element replaced.
           // update parent placeholder node element, recursively
@@ -5467,6 +5473,7 @@ function addHandler (
   }
   var newHandler = { value: value, modifiers: modifiers };
   var handlers = events[name];
+
   /* istanbul ignore if */
   if (Array.isArray(handlers)) {
     important ? handlers.unshift(newHandler) : handlers.push(newHandler);
@@ -5524,6 +5531,7 @@ function genComponentModel (
   var trim = ref.trim;
 
   var baseValueExpression = '$$v';
+
   var valueExpression = baseValueExpression;
   if (trim) {
     valueExpression =
@@ -5586,7 +5594,7 @@ function parseModel (val) {
   str = val;
   len = str.length;
   index$1 = expressionPos = expressionEndPos = 0;
-
+  // 没有中括号或不是以中括号结尾的
   if (val.indexOf('[') < 0 || val.lastIndexOf(']') < len - 1) {
     return {
       exp: val,
@@ -5800,7 +5808,7 @@ function genDefaultModel (
 
   var code = genAssignmentCode(value, valueExpression);
   if (needCompositionGuard) {
-    code = "if($event.target.composing)return;" + code;
+    // code = `if($event.target.composing)return;${code}`
   }
 
   addProp(el, 'value', ("(" + value + ")"));
@@ -6991,7 +6999,6 @@ var Transition = {
     if (child.data.directives && child.data.directives.some(function (d) { return d.name === 'show'; })) {
       child.data.show = true;
     }
-
     if (oldChild && oldChild.data && !isSameChild(child, oldChild)) {
       // replace old child transition data with fresh one
       // important for dynamic transitions!
@@ -9031,6 +9038,7 @@ console.log(compiled);
     for (var i = 0; i < l; i++) {
       res.staticRenderFns[i] = makeFunction(compiled.staticRenderFns[i], fnGenErrors);
     }
+    console.log(res);
 
     // check function generation errors.
     // this should only happen if there is a bug in the compiler itself.
@@ -9284,3 +9292,4 @@ Vue$3.compile = compileToFunctions;
 return Vue$3;
 
 })));
+//# sourceMappingURL=vue.js.map

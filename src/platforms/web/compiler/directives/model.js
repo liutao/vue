@@ -149,7 +149,7 @@ function genDefaultModel (
 
   let code = genAssignmentCode(value, valueExpression)
   if (needCompositionGuard) {
-    code = `if($event.target.composing)return;${code}`
+    // code = `if($event.target.composing)return;${code}`
   }
 
   addProp(el, 'value', `(${value})`)

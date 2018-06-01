@@ -59,6 +59,7 @@ export function addHandler (
   }
   const newHandler = { value, modifiers }
   const handlers = events[name]
+
   /* istanbul ignore if */
   if (Array.isArray(handlers)) {
     important ? handlers.unshift(newHandler) : handlers.push(newHandler)

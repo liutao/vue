@@ -47,6 +47,7 @@ const componentVNodeHooks = {
   },
 
   prepatch (oldVnode: MountedComponentVNode, vnode: MountedComponentVNode) {
+    debugger;
     const options = vnode.componentOptions
     const child = vnode.componentInstance = oldVnode.componentInstance
     updateChildComponent(

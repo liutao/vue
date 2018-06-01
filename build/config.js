@@ -135,6 +135,7 @@ function genConfig (opts) {
     format: opts.format,
     banner: opts.banner,
     moduleName: 'Vue',
+    sourceMap: true,
     plugins: [
       replace({
         __WEEX__: !!opts.weex,

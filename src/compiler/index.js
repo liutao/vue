@@ -134,6 +134,7 @@ console.log(compiled);
     for (let i = 0; i < l; i++) {
       res.staticRenderFns[i] = makeFunction(compiled.staticRenderFns[i], fnGenErrors)
     }
+    console.log(res);
 
     // check function generation errors.
     // this should only happen if there is a bug in the compiler itself.

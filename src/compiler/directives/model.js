@@ -11,6 +11,7 @@ export function genComponentModel (
   const { number, trim } = modifiers || {}
 
   const baseValueExpression = '$$v'
+
   let valueExpression = baseValueExpression
   if (trim) {
     valueExpression =
@@ -68,7 +69,7 @@ export function parseModel (val: string): Object {
   str = val
   len = str.length
   index = expressionPos = expressionEndPos = 0
-
+  // 没有中括号或不是以中括号结尾的
   if (val.indexOf('[') < 0 || val.lastIndexOf(']') < len - 1) {
     return {
       exp: val,

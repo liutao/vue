@@ -22,6 +22,7 @@ export function initExtend (Vue: GlobalAPI) {
     const SuperId = Super.cid
     const cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {})
     if (cachedCtors[SuperId]) {
+      debugger;
       return cachedCtors[SuperId]
     }
 

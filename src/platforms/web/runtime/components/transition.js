@@ -147,7 +147,6 @@ export default {
     if (child.data.directives && child.data.directives.some(d => d.name === 'show')) {
       child.data.show = true
     }
-
     if (oldChild && oldChild.data && !isSameChild(child, oldChild)) {
       // replace old child transition data with fresh one
       // important for dynamic transitions!
